@@ -68,9 +68,11 @@ Commit `data/curation.json` and push. The next build picks it up.
 3. Settings, Pages, Source: **GitHub Actions**.
 4. Actions tab, Build peer board, Run workflow.
 
-The Apify task should scrape the 34 company pages in `topics.py` with reposts
-included or not, the build drops them either way. For a daily run, 20 to 30 posts per
-page is plenty: history does the accumulating, so you don't need deep pulls.
+The Apify task should scrape the 34 company pages in `topics.py`, with reposts
+included or not, as the build drops them either way. It runs monthly on the 1st and the
+build follows on the 2nd. Set the task to about 80 posts per page: the busiest firms
+(FTI, Edelman, SEC Newgate) post 55 to 65 times in a heavy month, and history removes
+any overlap between runs.
 
 Free Pages needs a public repo, which makes the URL world-readable. If that's a
 problem, deploy `out/` to Cloudflare Pages behind Cloudflare Access instead.
