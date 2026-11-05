@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>__TITLE__</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#00244A; --band:#00244A; --band-ink:#FFFFFF; --band-muted:#A9C2D6;
+  --cyan:#0E9FBE; --cyan-soft:#DDF2F7; --paper:#F3F6F8; --surface:#FFFFFF;
+  --ink:#13212E; --muted:#5C6B76; --rule:#D8E0E6; --prev:#B9C6CF; --warn:#9A5B00; --warn-soft:#FBF0DE;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --band:#061626; --band-muted:#8FAAC0; --cyan:#3CC3DE; --cyan-soft:#12384A; --paper:#0A1B2A;
+    --surface:#0F2537; --ink:#E4ECF1; --muted:#97A9B6; --rule:#22405A; --prev:#3A5A73; --warn:#F2B35B; --warn-soft:#3A2C14;
+    --navy:#CFE3F1; color-scheme:dark; }
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;font-size:15px;line-height:1.5;
+  font-variant-numeric:tabular-nums;padding-bottom:env(safe-area-inset-bottom,0px)}
+a{color:var(--cyan)}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* header */
+.band{background:var(--band);color:var(--band-ink);padding:calc(28px + env(safe-area-inset-top,0px)) 0 30px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.band h1{font-size:15px;font-weight:600;margin:0 0 18px;color:var(--band-muted);letter-spacing:.01em}
+.band h1 b{color:var(--band-ink);font-weight:700}
+.headline{font-size:clamp(22px,3.1vw,32px);line-height:1.25;font-weight:600;margin:0;max-width:30ch}
+.headline em{font-style:normal;color:#7FD6EA}
+.asof{margin-top:16px;color:var(--band-muted);font-size:13.5px}
+
+/* controls */
+.controls{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--rule)}
+.controls .wrap{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding-top:10px;padding-bottom:10px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:7px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:6px 12px;cursor:pointer;color:var(--muted);font-size:14px}
+.seg button+button{border-left:1px solid var(--rule)}
+.seg button[aria-pressed=true]{background:var(--navy);color:var(--surface);font-weight:600}
+@media (prefers-color-scheme:dark){.seg button[aria-pressed=true]{background:var(--cyan);color:#06202C}}
+select,input[type=search]{border:1px solid var(--rule);background:var(--surface);border-radius:7px;padding:6px 10px;font-size:14px}
+input[type=search]{min-width:200px;flex:1;max-width:280px}
+nav.tabs{display:flex;gap:4px;margin-left:auto}
+nav.tabs button{white-space:nowrap;border:0;background:none;padding:8px 10px;cursor:pointer;color:var(--muted);font-weight:600;font-size:14.5px;
+  border-bottom:3px solid transparent}
+nav.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--cyan)}
+
+main.wrap{padding-top:26px;padding-bottom:60px}
+section[hidden]{display:none}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:32px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:1fr}nav.tabs{margin-left:0;width:100%;overflow-x:auto}}
+@media (max-width:700px){.controls{position:static}input[type=search]{max-width:none}.post{grid-template-columns:58px minmax(0,1fr);padding:14px}.ratio{font-size:21px}}
+h2{font-size:19px;margin:0 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 14px}
+.lede{font-size:19px;font-weight:600;line-height:1.35;margin:0 0 18px;max-width:46ch}
+.bar-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+
+/* post list */
+.posts{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--rule);border-radius:10px}
+.post{display:grid;grid-template-columns:74px minmax(0,1fr);gap:4px 16px;padding:16px 18px;border-top:1px solid var(--rule)}
+.post:first-child{border-top:0}
+.post.home{background:linear-gradient(90deg,var(--cyan-soft),transparent 60%);box-shadow:inset 3px 0 0 var(--cyan)}
+.ratio{font-size:26px;font-weight:700;line-height:1;color:var(--navy);padding-top:2px}
+.ratio small{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-top:4px;line-height:1.25}
+.ratio.cold{color:var(--muted)}
+.who{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.who b{font-weight:700}
+.who time{color:var(--muted);font-size:13.5px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.tag{font-size:12.5px;padding:1px 8px;border-radius:999px;background:var(--paper);color:var(--muted);border:1px solid var(--rule)}
+.tag.nm{background:var(--cyan-soft);color:var(--ink);border-color:transparent}
+.tag.flag{background:var(--warn-soft);color:var(--warn);border-color:transparent;font-weight:600}
+.tag.own{background:var(--navy);color:var(--surface);border-color:transparent}
+.text{margin:6px 0 8px;white-space:pre-line;overflow-wrap:anywhere;max-width:72ch;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.text.open{-webkit-line-clamp:unset;display:block;cursor:auto}
+.meta{display:flex;flex-wrap:wrap;gap:4px 16px;color:var(--muted);font-size:13.5px;align-items:center}
+.meta a{font-weight:600;text-decoration:none}
+.meta a:hover{text-decoration:underline}
+.copy{border:1px solid var(--rule);background:var(--surface);border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12.5px;color:var(--muted)}
+.more{display:block;margin:14px auto 0;border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:8px 16px;cursor:pointer;font-weight:600}
+.empty{padding:28px 18px;color:var(--muted)}
+
+/* side panels */
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px 18px 10px}
+.panel+.panel{margin-top:20px}
+.panel h3{font-size:15.5px;margin:0 0 2px}
+.panel p.sub{font-size:13px;margin-bottom:10px}
+.trow{display:block;width:100%;text-align:left;border:0;background:none;padding:8px 6px;margin:0 -6px;border-radius:6px;cursor:pointer}
+.trow:hover{background:var(--paper)}
+.trow[aria-pressed=true]{background:var(--cyan-soft)}
+.trow .top{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+.trow .note{color:var(--muted);font-size:12.5px}
+.trow .top b{font-weight:600}
+.track{position:relative;height:6px;margin-top:6px;background:var(--paper);border-radius:3px}
+.track i{position:absolute;left:0;top:0;bottom:0;background:var(--cyan);border-radius:3px}
+.track u{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--prev)}
+.up{color:var(--cyan);font-weight:600}
+.frow{display:grid;grid-template-columns:minmax(0,1fr) 90px 64px;gap:8px;align-items:center;font-size:13.5px;padding:5px 0}
+.frow.home b{color:var(--cyan)}
+.frow .track{margin:0}
+.frow span{text-align:right;color:var(--ink);line-height:1.2}
+.frow span small{display:block;color:var(--muted);font-size:12px}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.chip{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:5px 12px;cursor:pointer;font-size:14px}
+.chip b{font-weight:700;margin-left:4px}
+.chip[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:var(--surface)}
+@media (prefers-color-scheme:dark){.chip[aria-pressed=true]{background:var(--cyan);border-color:var(--cyan);color:#06202C}}
+.toggles{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;color:var(--muted)}
+.toggles label{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+
+/* firms table */
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:14px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
+td.wrap{white-space:normal;min-width:150px}
+th:first-child,td:first-child,th.l,td.l{text-align:left}
+th{font-size:13px;color:var(--muted);font-weight:600;cursor:pointer;user-select:none;position:sticky;top:0;background:var(--surface)}
+th[aria-sort]{color:var(--ink)}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--paper)}
+tr.home td:first-child{box-shadow:inset 3px 0 0 var(--cyan);font-weight:700}
+td.dim{color:var(--muted)}
+
+.about{max-width:70ch}
+.about h3{font-size:16px;margin:24px 0 6px}
+.about p,.about li{color:var(--ink)}
+.about li{margin-bottom:6px}
+@media (prefers-reduced-motion:no-preference){.track i{transition:width .3s ease}}
+</style>
+</head>
+<body>
+<header class="band">
+  <div class="wrap">
+    <h1><b>__TITLE__</b></h1>
+    <p class="headline" id="headline"></p>
+    <p class="asof" id="asof"></p>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="wrap">
+    <div class="seg" role="group" aria-label="Period" id="period"></div>
+    <div class="seg" role="group" aria-label="Firm group" id="group"></div>
+    <select id="firm" aria-label="Firm"></select>
+    <input type="search" id="q" placeholder="Search post text" aria-label="Search post text">
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+  </div>
+</div>
+
+<main class="wrap">
+  <section id="tab-trending">
+    <div class="grid">
+      <div>
+        <div class="bar-row">
+          <div><h2>Posts doing better than usual</h2>
+            <p class="sub" id="trend-sub"></p></div>
+          <div class="seg" role="group" aria-label="Sort" id="sort"></div>
+        </div>
+        <ul class="posts" id="trend-list"></ul>
+        <button class="more" id="trend-more" hidden>Show 25 more</button>
+      </div>
+      <aside class="side">
+        <div class="panel">
+          <h3>What firms are posting about</h3>
+          <p class="sub" id="theme-sub"></p>
+          <div id="theme-list"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="tab-newmedia" hidden>
+    <p class="lede" id="nm-lede"></p>
+    <div class="chips" id="nm-chips"></div>
+    <div class="grid">
+      <div>
+        <div class="bar-row">
+          <div class="toggles">
+            <label><input type="checkbox" id="nm-cand"> <span id="nm-cand-l">Include unreviewed</span></label>
+            <label><input type="checkbox" id="nm-adj"> <span id="nm-adj-l">Include adjacent</span></label>
+          </div>
+          <div class="seg" role="group" aria-label="Sort" id="nm-sort"></div>
+        </div>
+        <ul class="posts" id="nm-list"></ul>
+        <button class="more" id="nm-more" hidden>Show 25 more</button>
+      </div>
+      <aside class="side">
+        <div class="panel">
+          <h3>Who's writing about it</h3>
+          <p class="sub">New media posts as a share of each firm's output in this period</p>
+          <div id="nm-firms"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="tab-firms" hidden>
+    <h2>Every firm, this period</h2>
+    <p class="sub">Click a firm to see its posts. Click a column to sort.</p>
+    <div class="tablewrap"><table id="firm-table"></table></div>
+  </section>
+
+  <section id="tab-about" hidden>
+    <div class="about" id="about"></div>
+  </section>
+</main>
+
+<script>
+const DATA = /*__DATA__*/null;
+const M = DATA.meta, P = DATA.posts;
+const FIRMS = M.firms, TH = M.themes, NM = M.nm_themes;
+const AS_OF = new Date(M.as_of + 'T12:00:00Z');
+const DAY = 864e5, FLOOR = 5, PAGE = 25;
+const PERIODS = [[7,'7 days'],[30,'30 days'],[90,'90 days'],[365,'12 months']];
+const state = {days:30, group:'All', firm:-1, q:'', tab:'trending', sort:'ratio', nmSort:'date',
+  theme:-1, nmTheme:-1, cand:false, adj:false, trendN:PAGE, nmN:PAGE, fsort:['nm_share',-1]};
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtDate = d => new Date(d+'T12:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+const pct = (a,b) => b ? (a/b*100) : 0;
+const median = a => { if(!a.length) return 0; const s=[...a].sort((x,y)=>x-y), m=s.length>>1; return s.length%2?s[m]:(s[m-1]+s[m])/2; };
+const ratio = p => p.r / Math.max(FIRMS[p.f].median, FLOOR);
+const firstDate = P.length ? P[P.length-1].d : M.as_of;
+
+function inWindow(p, days, offset=0){
+  const age = (AS_OF - new Date(p.d+'T12:00:00Z'))/DAY;
+  return age >= offset*days - 0.5 && age < (offset+1)*days - 0.5;
+}
+function firmOk(p){
+  if(state.firm >= 0) return p.f === state.firm;
+  return state.group === 'All' || FIRMS[p.f].group === state.group;
+}
+function textOk(p){ return !state.q || p.x.toLowerCase().includes(state.q); }
+const base = (offset=0) => P.filter(p => inWindow(p, state.days, offset) && firmOk(p) && textOk(p));
+const hasPrev = () => (AS_OF - new Date(firstDate+'T12:00:00Z'))/DAY >= state.days*2 - 1;
+const periodLabel = () => state.days === 365 ? 'the last 12 months' : `the last ${state.days} days`;
+const scopeLabel = () => state.firm >= 0 ? FIRMS[state.firm].name : (state.group==='All' ? `${FIRMS.length} firms` : `${state.group.toLowerCase()} firms`);
+
+/* ---------- controls ---------- */
+function seg(el, opts, key, after){
+  el.innerHTML = opts.map(([v,l]) => `<button type="button" data-v="${v}" aria-pressed="${state[key]==v}">${l}</button>`).join('');
+  el.onclick = e => { const b = e.target.closest('button'); if(!b) return;
+    const v = b.dataset.v; state[key] = isNaN(+v) ? v : +v;
+    [...el.children].forEach(x => x.setAttribute('aria-pressed', x===b)); after && after(); render(); };
+}
+seg($('#period'), PERIODS, 'days', resetPages);
+seg($('#group'), [['All','All'],['Corporate','Corporate'],['Consumer','Consumer']], 'group', () => { state.firm=-1; $('#firm').value='-1'; resetPages(); });
+seg($('#sort'), [['ratio','Above their usual'],['reactions','Most reactions']], 'sort', resetPages);
+seg($('#nm-sort'), [['date','Newest'],['ratio','Above their usual']], 'nmSort', resetPages);
+$('#firm').innerHTML = `<option value="-1">All firms</option>` +
+  FIRMS.map((f,i)=>[f,i]).sort((a,b)=>a[0].name.localeCompare(b[0].name)).map(([f,i]) => `<option value="${i}">${esc(f.name)}</option>`).join('');
+$('#firm').onchange = e => { state.firm = +e.target.value; resetPages(); render(); };
+let qt; $('#q').oninput = e => { clearTimeout(qt); qt = setTimeout(() => { state.q = e.target.value.trim().toLowerCase(); resetPages(); render(); }, 200); };
+$('#tabs').innerHTML = [['trending','Trending'],['newmedia','New media'],['firms','Firms'],['about','How it works']]
+  .map(([v,l]) => `<button type="button" role="tab" data-v="${v}" aria-selected="${state.tab===v}">${l}</button>`).join('');
+$('#tabs').onclick = e => { const b = e.target.closest('button'); if(b) showTab(b.dataset.v); };
+function showTab(t){ state.tab = t;
+  [...$('#tabs').children].forEach(x => x.setAttribute('aria-selected', x.dataset.v===t));
+  ['trending','newmedia','firms','about'].forEach(x => $('#tab-'+x).hidden = x!==t);
+  history.replaceState(null,'','#'+t); }
+$('#nm-cand').onchange = e => { state.cand = e.target.checked; resetPages(); render(); };
+$('#nm-adj').onchange = e => { state.adj = e.target.checked; resetPages(); render(); };
+$('#trend-more').onclick = () => { state.trendN += PAGE; renderTrending(); };
+$('#nm-more').onclick = () => { state.nmN += PAGE; renderNewMedia(); };
+function resetPages(){ state.trendN = PAGE; state.nmN = PAGE; }
+
+/* ---------- post row ---------- */
+function postRow(p, opts={}){
+  const f = FIRMS[p.f], r = ratio(p);
+  const tags = (opts.nm ? p.m.map(i => `<span class="tag nm">${esc(NM[i])}</span>`) : p.t.map(i => `<span class="tag">${esc(TH[i])}</span>`));
+  if(!opts.nm && p.n === 1) tags.push(`<span class="tag nm">New media</span>`);
+  if(opts.nm && p.o) tags.push(`<span class="tag own">Own research</span>`);
+  if(p.n === 2) tags.push(`<span class="tag flag">Not reviewed yet</span>`);
+  if(p.n === 3) tags.push(`<span class="tag flag">Adjacent: ${esc(p.p)}</span>`);
+  const copy = p.n === 2 ? `<button class="copy" data-id="${p.id}">Copy ID</button>` : '';
+  return `<li class="post${f.home?' home':''}">
+    <div class="ratio${r<1?' cold':''}">${r>=10?Math.round(r):r.toFixed(1)}×<small>vs usual</small></div>
+    <div>
+      <div class="who"><b>${esc(f.name)}</b><time datetime="${p.d}">${fmtDate(p.d)}</time></div>
+      ${tags.length?`<div class="tags">${tags.join('')}</div>`:''}
+      <p class="text" title="Click to expand">${esc(p.x.replace(/\n{2,}/g,'\n'))}</p>
+      <div class="meta"><span>${p.r.toLocaleString('en-GB')} reactions</span><span>${p.c} comments</span>
+        <a href="${esc(p.u)}" target="_blank" rel="noopener">Open on LinkedIn</a>${copy}</div>
+    </div></li>`;
+}
+document.addEventListener('click', e => { const t = e.target.closest('.text'); if(t){ t.classList.toggle('open'); return; }
+  const b = e.target.closest('.copy'); if(!b) return;
+  navigator.clipboard?.writeText(b.dataset.id).then(() => { b.textContent = 'Copied'; setTimeout(()=>b.textContent='Copy ID',1500); }); });
+
+/* ---------- header ---------- */
+function themeCounts(posts){ const c = new Array(TH.length).fill(0); posts.forEach(p => p.t.forEach(i => c[i]++)); return c; }
+function renderHeader(){
+  const cur = base(), prev = base(1), c = themeCounts(cur), pc = themeCounts(prev);
+  const firms = new Set(cur.map(p => p.f)).size;
+  let top = c.indexOf(Math.max(...c));
+  let rise = -1, best = 0;
+  if(hasPrev()) c.forEach((n,i) => { const d = n - pc[i]; if(n >= 3 && d > best){ best = d; rise = i; } });
+  let h = `In ${periodLabel()}, ${firms} firm${firms===1?'':'s'} posted ${cur.length.toLocaleString('en-GB')} times.`;
+  if(cur.length && c[top]) h += ` <em>${esc(TH[top])}</em> came up most`;
+  if(rise >= 0 && rise !== top) h += `, and <em>${esc(TH[rise])}</em> grew fastest.`; else if(cur.length && c[top]) h += '.';
+  $('#headline').innerHTML = h;
+  $('#asof').textContent = `Posts up to ${fmtDate(M.as_of)}. Built ${M.built}.`;
+}
+
+/* ---------- trending ---------- */
+function renderTrending(){
+  let cur = base();
+  if(state.theme >= 0) cur = cur.filter(p => p.t.includes(state.theme));
+  const sorted = [...cur].sort(state.sort==='ratio' ? (a,b)=>ratio(b)-ratio(a) : (a,b)=>b.r-a.r);
+  $('#trend-sub').textContent = (state.theme>=0 ? `${TH[state.theme]}, ` : '') +
+    `${cur.length.toLocaleString('en-GB')} posts from ${scopeLabel()} in ${periodLabel()}. The big number is reactions compared with that firm's typical post.`;
+  $('#trend-list').innerHTML = sorted.slice(0, state.trendN).map(p => postRow(p)).join('') ||
+    `<li class="empty">No posts match. Try a longer period or clear the search.</li>`;
+  $('#trend-more').hidden = sorted.length <= state.trendN;
+
+  const all = base(), prev = base(1), c = themeCounts(all), pc = themeCounts(prev), showPrev = hasPrev();
+  const fc = TH.map((_,i) => new Set(all.filter(p => p.t.includes(i)).map(p => p.f)).size);
+  const max = Math.max(1, ...c, ...(showPrev?pc:[]));
+  $('#theme-sub').textContent = showPrev ? `Posts per theme. The grey mark is the previous ${state.days===365?'12 months':state.days+' days'}. Click a theme to filter.` : 'Posts per theme. Click a theme to filter.';
+  $('#theme-list').innerHTML = TH.map((t,i)=>[t,i]).filter(([,i]) => c[i] || pc[i]).sort((a,b)=>c[b[1]]-c[a[1]]).map(([t,i]) => {
+    const d = c[i]-pc[i];
+    const ch = !showPrev ? '' : d>0 ? `<span class="up">up ${d}</span>` : d<0 ? `down ${-d}` : 'no change';
+    return `<button class="trow" type="button" data-i="${i}" aria-pressed="${state.theme===i}">
+      <div class="top"><b>${esc(t)}</b><b>${c[i]}</b></div>
+      <div class="note">${ch}${ch?' on the previous period, ':''}${fc[i]} firm${fc[i]===1?'':'s'}</div>
+      <div class="track"><i style="width:${pct(c[i],max)}%"></i>${showPrev?`<u style="left:${pct(pc[i],max)}%"></u>`:''}</div></button>`;
+  }).join('') || `<p class="sub">Nothing in this period.</p>`;
+}
+$('#theme-list').onclick = e => { const b = e.target.closest('.trow'); if(!b) return;
+  const i = +b.dataset.i; state.theme = state.theme===i ? -1 : i; state.trendN = PAGE; renderTrending(); };
+
+/* ---------- new media ---------- */
+function nmPool(){
+  const ok = p => p.n===1 || (state.cand && p.n===2) || (state.adj && p.n===3);
+  return base().filter(ok);
+}
+function renderNewMedia(){
+  const all = base(), subj = all.filter(p => p.n===1), pool = nmPool();
+  const firms = new Set(subj.map(p => p.f)).size, own = subj.filter(p => p.o).length;
+  $('#nm-lede').textContent = subj.length
+    ? `In ${periodLabel()}, ${subj.length} post${subj.length===1?'':'s'} made new media the subject. That's ${pct(subj.length, all.length).toFixed(1)}% of everything ${scopeLabel()} posted, from ${firms} firm${firms===1?'':'s'}${own?`, and ${own} drew on the firm's own research`:''}.`
+    : `No posts made new media the subject in ${periodLabel()}. Try a longer period.`;
+  const counts = NM.map((_,i) => pool.filter(p => p.m.includes(i)).length);
+  $('#nm-chips').innerHTML = `<button class="chip" type="button" data-i="-1" aria-pressed="${state.nmTheme===-1}">All<b>${pool.length}</b></button>` +
+    NM.map((t,i) => `<button class="chip" type="button" data-i="${i}" aria-pressed="${state.nmTheme===i}">${esc(t)}<b>${counts[i]}</b></button>`).join('');
+  const cand = all.filter(p => p.n===2).length, adj = all.filter(p => p.n===3).length;
+  $('#nm-cand-l').textContent = `Include unreviewed (${cand})`; $('#nm-adj-l').textContent = `Include adjacent (${adj})`;
+  let list = state.nmTheme>=0 ? pool.filter(p => p.m.includes(state.nmTheme)) : pool;
+  list = [...list].sort(state.nmSort==='date' ? (a,b)=>b.d.localeCompare(a.d)||b.r-a.r : (a,b)=>ratio(b)-ratio(a));
+  $('#nm-list').innerHTML = list.slice(0, state.nmN).map(p => postRow(p,{nm:true})).join('') ||
+    `<li class="empty">Nothing here for this period. Widen it, or include unreviewed posts.</li>`;
+  $('#nm-more').hidden = list.length <= state.nmN;
+
+  const rows = FIRMS.map((f,i) => { const mine = all.filter(p => p.f===i);
+      return {f, i, n: mine.filter(p => p.n===1).length, t: mine.length}; })
+    .filter(x => x.t && (x.n || x.f.home)).sort((a,b) => pct(b.n,b.t)-pct(a.n,a.t) || b.n-a.n);
+  const mx = Math.max(1, ...rows.map(x => pct(x.n,x.t)));
+  $('#nm-firms').innerHTML = rows.map(x => `<div class="frow${x.f.home?' home':''}"><b>${esc(x.f.name)}</b>
+      <div class="track"><i style="width:${pct(pct(x.n,x.t),mx)}%"></i></div><span>${pct(x.n,x.t).toFixed(1)}%<small>${x.n} of ${x.t}</small></span></div>`).join('')
+    || `<p class="sub">No firm has posted about it in this period.</p>`;
+}
+$('#nm-chips').onclick = e => { const b = e.target.closest('.chip'); if(!b) return; state.nmTheme = +b.dataset.i; state.nmN = PAGE; renderNewMedia(); };
+
+/* ---------- firms ---------- */
+const FCOLS = [['name','Firm','l'],['group','Group','l'],['posts','Posts'],['median','Median reactions'],
+  ['best','Best vs usual'],['top','Top theme','l'],['nm','New media'],['nm_share','New media share']];
+function renderFirms(){
+  const all = P.filter(p => inWindow(p, state.days) && textOk(p) && (state.group==='All' || FIRMS[p.f].group===state.group));
+  const rows = FIRMS.map((f,i) => {
+    if(state.group!=='All' && f.group!==state.group) return null;
+    const mine = all.filter(p => p.f===i), c = themeCounts(mine), nm = mine.filter(p => p.n===1).length;
+    const ti = c.indexOf(Math.max(...c));
+    return {i, home:f.home, name:f.name, group:f.group, posts:mine.length, median:median(mine.map(p=>p.r)),
+      best: mine.length ? Math.max(...mine.map(ratio)) : 0, top: mine.length && c[ti] ? TH[ti] : '', nm, nm_share: pct(nm, mine.length)};
+  }).filter(Boolean);
+  const [k,dir] = state.fsort;
+  rows.sort((a,b) => (typeof a[k]==='string' ? a[k].localeCompare(b[k]) : a[k]-b[k]) * dir);
+  $('#firm-table').innerHTML = `<thead><tr>${FCOLS.map(([c,l,al]) => `<th class="${al||''}" data-k="${c}" ${k===c?`aria-sort="${dir>0?'ascending':'descending'}"`:''}>${l}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r => `<tr class="${r.home?'home':''}" data-i="${r.i}"><td>${esc(r.name)}</td><td class="l dim">${r.group}</td>
+      <td>${r.posts}</td><td>${r.posts?Math.round(r.median):''}</td><td>${r.best?r.best.toFixed(1)+'×':''}</td>
+      <td class="l wrap">${esc(r.top)}</td><td>${r.nm||''}</td><td>${r.posts?r.nm_share.toFixed(1)+'%':''}</td></tr>`).join('')}</tbody>`;
+}
+$('#firm-table').onclick = e => {
+  const th = e.target.closest('th'); if(th){ const k = th.dataset.k; state.fsort = [k, state.fsort[0]===k ? -state.fsort[1] : (k==='name'||k==='group'||k==='top'?1:-1)]; renderFirms(); return; }
+  const tr = e.target.closest('tbody tr'); if(tr){ state.firm = +tr.dataset.i; $('#firm').value = tr.dataset.i; resetPages(); render(); showTab('trending'); window.scrollTo({top:0}); }
+};
+
+/* ---------- about ---------- */
+$('#about').innerHTML = `
+  <h2>How it works</h2>
+  <p>This board tracks the LinkedIn company pages of ${FIRMS.length} communications firms: ${FIRMS.filter(f=>f.group==='Corporate').length} corporate and financial agencies and ${FIRMS.filter(f=>f.group==='Consumer').length} consumer agencies. Reposts are left out, so everything here is a firm's own post. It covers ${P.length.toLocaleString('en-GB')} posts in the 12 months to ${fmtDate(M.as_of)}.</p>
+  <h3>The big number on each post</h3>
+  <p>Reactions divided by that firm's median post over the last 12 months. A big page and a small page can't be compared on raw reactions, so this shows which posts landed well for the firm that wrote them. Firms with very low medians are floored at ${FLOOR} reactions so a handful of likes doesn't look like a breakout.</p>
+  <h3>Themes</h3>
+  <p>Posts are tagged against a keyword model of ${TH.length} themes. A post can carry several, and some carry none. The model lives in <code>topics.py</code> and is easy to change. Treat theme counts as direction rather than precise totals.</p>
+  <h3>New media</h3>
+  <p>A post counts as new media only when the channel itself is the subject: a view on creators, Reddit, Substack, podcasts, newsletters or social platforms. Posts that just use those channels, like a newsletter edition or a campaign with influencers, don't count. Those decisions are made by a person and stored in <code>data/curation.json</code>.</p>
+  <ul>
+    <li><b>Reviewed</b> posts are the default view. ${M.counts.subject} posts in the window are confirmed.</li>
+    <li><b>Unreviewed</b> posts match new media keywords but nobody has checked them yet. ${M.counts.candidate} are waiting. Use Copy ID and <code>curate.py</code> to file them.</li>
+    <li><b>Adjacent</b> posts sit just outside the definition, mostly disinformation and the odd GEO or radio post. ${M.counts.adjacent} are logged.</li>
+  </ul>
+  <h3>Limits</h3>
+  <p>Engagement is taken from the latest scrape that saw each post, so recent posts will keep climbing. The scraper caps how far back it reads busy pages, so history before this board started running is uneven for the highest-volume firms. Image-only and video-only posts, comments and employees' personal posts aren't captured.</p>`;
+
+function render(){ renderHeader(); renderTrending(); renderNewMedia(); renderFirms(); }
+const hash = location.hash.slice(1); if(['trending','newmedia','firms','about'].includes(hash)) showTab(hash);
+render();
+</script>
+</body>
+</html>
