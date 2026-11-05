@@ -1,0 +1,57 @@
+name: Build peer board
+
+on:
+  schedule:
+    - cron: "30 6 * * *"      # 06:30 UTC daily. Set this after your Apify schedule finishes.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pull latest scrape and build the board
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+        run: |
+          if [ -z "${{ vars.APIFY_TASK_ID }}" ]; then
+            echo "APIFY_TASK_ID isn't set. Add it under Settings, Secrets and variables, Actions, Variables." && exit 1
+          fi
+          python build_board.py --task "${{ vars.APIFY_TASK_ID }}" --title "${{ vars.BOARD_TITLE || 'Peer agency LinkedIn board' }}"
+
+      - name: Save the updated history
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add data/history.json
+          git diff --cached --quiet || git commit -m "Update history $(date -u +%F)"
+          git push
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
