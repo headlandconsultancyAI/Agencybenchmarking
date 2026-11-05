@@ -2,7 +2,7 @@ name: Build peer board
 
 on:
   schedule:
-    - cron: "30 6 * * *"      # 06:30 UTC daily. Set this after your Apify schedule finishes.
+    - cron: "0 9 2 * *"       # 09:00 UTC on the 2nd of each month, after the Apify run on the 1st
   workflow_dispatch:
 
 permissions:
